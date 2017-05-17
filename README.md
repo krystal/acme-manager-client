@@ -1,6 +1,6 @@
 # AcmeManager
 
-This is a client library for (acme-manager)[https://github.com/catphish/acme-manager], which is a tool to issue and manage letsencrypt certificates on a host.
+This is a client library for [acme-manager](https://github.com/catphish/acme-manager), which is a tool to issue and manage letsencrypt certificates on a host.
 
 The library enables you to view the certificates currently managed by an instance of acme-manager, issue new certificates and provides an optional middleware to redirect letsencrypt domain verification requests to acme-manager.
 
