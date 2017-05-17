@@ -1,8 +1,8 @@
 # AcmeManager
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/acme_manager`. To experiment with that code, run `bin/console` for an interactive prompt.
+This is a client library for (acme-manager)[https://github.com/catphish/acme-manager], which is a tool to issue and manage letsencrypt certificates on a host.
 
-TODO: Delete this and the text above, and describe your gem
+The library enables you to view the certificates currently managed by an instance of acme-manager, issue new certificates and provides an optional middleware to redirect letsencrypt domain verification requests to acme-manager.
 
 ## Installation
 
@@ -20,9 +20,69 @@ Or install it yourself as:
 
     $ gem install acme_manager
 
+## Configuration
+
+To configure the library you must configure the location of your acme-manager server and provide it's API key. You can do this with a configure block, or with the environment variables `ACME_MANAGER_HOST` and `ACME_MANAGER_API_KEY`.
+
+```ruby
+# config/initializers/acme_manager.rb
+AcmeManager.configure do |config|
+  config.host = 'https://acme-manager.example.com'
+  config.api_key = '1234567890'
+end
+```
+
 ## Usage
 
-TODO: Write usage instructions here
+### Issuing a Certificate
+
+To issue a certificate call `AcmeManager.issue` this will return an object which indicates whether the request was successful, and what errors were received if it wasn't.
+
+```ruby
+issue_request = AcmeManager.issue('subdomain.example.com')
+issue_request.success?
+# => false
+issue_request.error
+# => "Error message raised by LE"
+```
+
+### Listing Certificates
+
+To get a list of existing certificates managed me acme-manager call `AcmeManager.list`. This will return an array of
+certificate objects.
+
+```ruby
+certificate = AcmeManager.list.first
+certificate.name
+# => "subdomain.example.com"
+certificate.not_after
+# => 2017-05-17 16:18:22 UTC
+certificate.expired?
+# => false
+```
+
+### Verification Request Proxying
+
+Acme-manager was designed to be run behind a load balancer, with any LetsEncrypt verification requests or requests to
+/~acmemanager being sent to it.
+
+If you're not lucky enough to have a load balancer that can siphon these requests for you, this library packs a
+middleware that you can use to proxy the verification requests. Instructions below are for Rails, if you need to
+include the middleware in another Rack app, you probably know what you're doing already.
+
+```ruby
+# config/application.rb
+# ...
+require 'acme_manager/middleware/forward_verification_challenge'
+
+module MyApp
+  class Application < Rails::Application
+    # ...
+    config.middleware.insert_before ActionDispatch::Static, AcmeManager::Middleware::ForwardVerificationChallenge
+    # ...
+  end
+end
+```
 
 ## Development
 
