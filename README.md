@@ -1,6 +1,6 @@
 # AcmeManager
 
-This is a client library for [acme-manager](https://github.com/catphish/acme-manager), which is a tool to issue and manage letsencrypt certificates on a host.
+This is a client library for [acme-manager](https://github.com/atech/acme-manager), which is a tool to issue and manage letsencrypt certificates on a host.
 
 The library enables you to view the certificates currently managed by an instance of acme-manager, issue new certificates and provides an optional middleware to redirect letsencrypt domain verification requests to acme-manager.
 
@@ -92,7 +92,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/acme_manager.
+Bug reports and pull requests are welcome on GitHub at https://github.com/atech/acme-manager-client.
 
 
 ## License
