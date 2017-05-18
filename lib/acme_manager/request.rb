@@ -55,7 +55,7 @@ module AcmeManager
     #
     # @return [Net::HTTP] Connection object
     def new_http_connection
-      http = Net::HTTP.start(request_uri.host, request_uri.port)
+      http = Net::HTTP.new(request_uri.host, request_uri.port)
       if request_uri.scheme == 'https'
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
