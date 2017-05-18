@@ -1,6 +1,8 @@
 module AcmeManager
   # Handles the request and response associated with issuing a new certificate through acme-manager
   class IssueRequest
+    SUCCESSFUL_RESULTS = %w(issued not_due).freeze
+
     attr_reader :name, :success, :error_type, :error
 
     # @param [String] name Domain name to issue a cert for
@@ -24,17 +26,18 @@ module AcmeManager
     #
     # @return [Boolean] true if the request was successful.
     def make
+      AcmeManager.logger.info "Requesting certificate issue for '#{name}'"
       response = Request.make("issue/#{name}")
 
-      if response['result'] == 'issued'
+      if SUCCESSFUL_RESULTS.include?(response['result'])
+        AcmeManager.logger.info "Issue for '#{name}' successful"
         @success = true
       else
-        @success = false
         @error_type = response['reason']['type']
         @error = response['reason']['detail']
+        AcmeManager.logger.warn "Issue for '#{name}' failed - #{error_type}, #{error}"
+        @success = false
       end
-
-      success?
     end
 
     # Was the request sucessful? This will return false if the request hasn't been made yet

@@ -5,7 +5,7 @@ require 'json'
 module AcmeManager
   # Simplify the process of making an API request to acme-manager
   class Request
-    PATH_PREFIX = '/~acmemanager/'.freeze
+    PATH_PREFIX = '~acmemanager/'.freeze
 
     # @param [String] path The API call you wish to make. This will have PATH_PREFIX prepended to it when
     #   making a request
@@ -29,16 +29,22 @@ module AcmeManager
     #
     # @raise [Net::HTTPError] Raised when a non-2xx result is returned
     def make
+      AcmeManager.logger.debug "Requesting #{request_uri}"
+
       http = new_http_connection
 
-      request = Net::HTTP::Get.new(PATH_PREFIX + @path.to_s)
+      request = Net::HTTP::Get.new(request_uri.path)
       request['X-API-KEY'] = AcmeManager.config.api_key
 
       result = http.request(request)
 
+      AcmeManager.logger.debug "Response Status: #{result.code}"
+      AcmeManager.logger.debug "Response Body:\n#{result.body}"
+
       if result.is_a?(Net::HTTPSuccess)
         JSON.parse(result.body)
       else
+        AcmeManager.logger.warn "Request to #{request_uri} failed"
         result.value
       end
     end
@@ -49,15 +55,20 @@ module AcmeManager
     #
     # @return [Net::HTTP] Connection object
     def new_http_connection
-      host_uri = URI(AcmeManager.config.host)
-
-      http = Net::HTTP.start(host_uri.host, host_uri.port)
-      if host_uri.scheme == 'https'
+      http = Net::HTTP.start(request_uri.host, request_uri.port)
+      if request_uri.scheme == 'https'
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
 
       http
+    end
+
+    # Build a complete URL for the request and parse it with URI
+    #
+    # @return [URI::HTTP] Parsed request URI
+    def request_uri
+      @request_uri ||= URI("#{AcmeManager.config.host}/#{PATH_PREFIX}#{@path}")
     end
   end
 end

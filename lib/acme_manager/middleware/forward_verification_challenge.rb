@@ -9,7 +9,8 @@ module AcmeManager
       end
 
       def call(env)
-        if env['PATH_INFO'] =~ /\A\/.well-known\/acme-challenge\//
+        if env['PATH_INFO'] =~ %r{\A/.well-known/acme-challenge/}
+          AcmeManager.logger.info "Fowarding request to #{env['PATH_INFO']} to #{AcmeManager.config.host}"
           result = Net::HTTP.get_response(URI("#{AcmeManager.config.host}#{env['PATH_INFO']}"))
           [result.code.to_i, result.to_hash, [result.body]]
         else
