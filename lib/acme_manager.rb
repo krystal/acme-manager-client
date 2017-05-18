@@ -7,9 +7,6 @@ require "acme_manager/issue_request"
 module AcmeManager
   class Error < StandardError; end;
 
-  # Allow a custom logger to be set instead of configuring our own
-  attr_writer :logger
-
   # @return [Configuration] The current configuration (or new if uninitialized)
   def self.config
     @config ||= Configuration.new
@@ -47,5 +44,12 @@ module AcmeManager
       logger.level = config.log_level
       logger
     end
+  end
+
+  # Allow a custom logger to be set instead of configuring our own
+  #
+  # @param [Logger] new_logger Custom logger to set
+  def self.logger=(new_logger)
+    @logger = new_logger
   end
 end
