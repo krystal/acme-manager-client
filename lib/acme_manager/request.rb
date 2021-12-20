@@ -1,11 +1,13 @@
-require 'net/http'
-require 'uri'
-require 'json'
+require "net/http"
+require "uri"
+require "json"
 
 module AcmeManager
   # Simplify the process of making an API request to acme-manager
   class Request
-    PATH_PREFIX = '~acmemanager/'.freeze
+    PATH_PREFIX = "~acmemanager/".freeze
+
+    attr_reader :path, :error_type, :error
 
     # @param [String] path The API call you wish to make. This will have PATH_PREFIX prepended to it when
     #   making a request
@@ -34,7 +36,7 @@ module AcmeManager
       http = new_http_connection
 
       request = Net::HTTP::Get.new(request_uri.path)
-      request['X-API-KEY'] = AcmeManager.config.api_key
+      request["X-API-KEY"] = AcmeManager.config.api_key
 
       result = http.request(request)
 
@@ -56,7 +58,7 @@ module AcmeManager
     # @return [Net::HTTP] Connection object
     def new_http_connection
       http = Net::HTTP.new(request_uri.host, request_uri.port)
-      if request_uri.scheme == 'https'
+      if request_uri.scheme == "https"
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
@@ -68,7 +70,7 @@ module AcmeManager
     #
     # @return [URI::HTTP] Parsed request URI
     def request_uri
-      @request_uri ||= URI("#{AcmeManager.config.host}/#{PATH_PREFIX}#{@path}")
+      @request_uri ||= URI("#{AcmeManager.config.host}/#{PATH_PREFIX}#{path}")
     end
   end
 end

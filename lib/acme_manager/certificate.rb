@@ -19,9 +19,9 @@ module AcmeManager
     #
     # @return [Array<Certificate>] All currently managed certificates
     def self.all
-      Request.make('list').map do |cert_info|
+      Request.make("list").map do |cert_info|
         AcmeManager.logger.info "Requesting list of certificates"
-        new(cert_info['name'], Time.iso8601(cert_info['not_after']))
+        new(cert_info["name"], Time.iso8601(cert_info["not_after"]))
       end
     end
   end
