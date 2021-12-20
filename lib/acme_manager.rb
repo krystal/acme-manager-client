@@ -4,7 +4,6 @@ require "acme_manager/request"
 require "acme_manager/certificate"
 require "acme_manager/issue_request"
 require "acme_manager/purge_request"
-require "pry"
 
 module AcmeManager
   class Error < StandardError; end
