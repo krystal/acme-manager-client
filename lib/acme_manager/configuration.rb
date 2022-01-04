@@ -8,7 +8,7 @@ module AcmeManager
     #
     # @raise [AcmeManager::Error] Raised when unconfigured
     def host
-      @host || ENV['ACME_MANAGER_HOST'] || raise(Error, "`host` has not been configured. Set it using the " \
+      @host || ENV["ACME_MANAGER_HOST"] || raise(Error, "`host` has not been configured. Set it using the " \
         "`AcmeManager.configure` block or use the `ACME_MANAGER_HOST` environment variable")
     end
 
@@ -17,7 +17,7 @@ module AcmeManager
     #
     # @raise [AcmeManager::Error] Raised when unconfigured
     def api_key
-      @api_key || ENV['ACME_MANAGER_API_KEY'] || raise(Error, "`api_key` has not been configured. Set it using the " \
+      @api_key || ENV["ACME_MANAGER_API_KEY"] || raise(Error, "`api_key` has not been configured. Set it using the " \
         "`AcmeManager.configure` block or use the `ACME_MANAGER_API_KEY` environment variable")
     end
 
@@ -28,7 +28,7 @@ module AcmeManager
 
     # @return [Integer] Severity level to write logs at. Logger::WARNING by default.
     def log_level
-      @log_level || Logger::WARNING
+      @log_level || Logger::WARN
     end
   end
 end

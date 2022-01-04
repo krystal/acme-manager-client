@@ -61,6 +61,17 @@ certificate.expired?
 # => false
 ```
 
+### Purging a certificate
+To purge a certifcate call `AcmeManager.purge`, this will return a request object which indicates whether the request was successful, and what errors occurred if it wasn't.
+
+```ruby
+purge_request = AcmeManager.purge('subdomain.example.com')
+purge_reqeust.success
+# => false
+purge_request.error
+# => "Error message raised by Acme Manager"
+```
+
 ### Verification Request Proxying
 
 Acme-manager was designed to be run behind a load balancer, with any LetsEncrypt verification requests or requests to

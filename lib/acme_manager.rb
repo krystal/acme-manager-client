@@ -3,9 +3,10 @@ require "acme_manager/configuration"
 require "acme_manager/request"
 require "acme_manager/certificate"
 require "acme_manager/issue_request"
+require "acme_manager/purge_request"
 
 module AcmeManager
-  class Error < StandardError; end;
+  class Error < StandardError; end
 
   # @return [Configuration] The current configuration (or new if uninitialized)
   def self.config
@@ -36,6 +37,15 @@ module AcmeManager
   # @return [IssueRequest] Object containing result of the issue request
   def self.issue(name)
     IssueRequest.make(name)
+  end
+
+  # Instruct the acme-manager to purge a certificate for a domain
+  #
+  # @param [String] name Domain name to purge the certificate
+  #
+  # @return [PurgeRequest] Object containing the result of the purge
+  def self.purge(name)
+    PurgeRequest.make(name)
   end
 
   def self.logger
